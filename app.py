@@ -6,7 +6,6 @@ import uuid
 import requests
 
 
-#  WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&dt=1643803200&appid={apikey}"
 WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apikey}"
 
 PORT = 5000
@@ -15,7 +14,7 @@ app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(app)
 
-app.config["MONGO_URI"] = str(os.environ.get("AARI_MONGO_STRING"))
+app.config["MONGO_URI"] = str(os.environ.get("MONGODB_PROD_STRING"))
 API_KEY = str(os.environ.get("OPENWEATHER_API_KEY"))
 mongo = PyMongo(app)
 db = mongo.db
@@ -56,52 +55,26 @@ def index():
 @app.route('/form')
 def form(): 
 
-#  @app.route('/form', methods=["POST"])
-#  def createEntry():
-    #  return redirect("/", code=302)
-
     args = request.args
    
     if not args: 
         print("endpoint received")
         return render_template('form.html', entries=test_data)
 
-    print("creating item")
-
-    #  item_name = request.form.get('item_name')
-    #  quantity = request.form.get('quantity')
-    #  city = request.form.get('city')
-    _id = uuid.uuid4()
+    _id = str(uuid.uuid4())
     item_name = args.get('item_name')
     quantity = args.get('quantity')
     city = args.get('city')
 
-    print(args)
-    #  print(request.form)
-    print("item_name: ", item_name)
-    print("city: ", city)
-    #  if (city not in cities): 
-    #      return "Invalid city", 500
-
-    #  lat = cities[city][0]
-    #  lon = cities[city][1]
-
     print(WEATHER_API_URL.format(city=city, apikey=API_KEY))
     res = requests.get(WEATHER_API_URL.format(city=city, apikey=API_KEY))
-    #  print(WEATHER_API_URL.format(lat=lat, lon=lon, apikey=API_KEY))
-    #  res = requests.get(WEATHER_API_URL.format(lat=lat, lon=lon, apikey=API_KEY))
     if not res.ok: 
         print("failed to get weather information")
-        print(res)
         return "Failed to get weather information", 500
 
-    #  print("hello, res:")
-    #  print(res)
-    #  print(res.json())
     weather_data = res.json()["main"]
     description = res.json()["weather"][0]["description"]
 
-    #  print(weather_data)
     weather_description_template = "{desc}, temperature of {temp}, pressure of {pressure}, humidity of {humidity}"
     weather_description = weather_description_template.format(
             desc=description,
@@ -109,12 +82,12 @@ def form():
             pressure=weather_data["pressure"], 
             humidity=weather_data["humidity"])
 
-    return redirect(url_for('index'), code=302)
     db.entries.insert_one({'id': _id, 'item_name': item_name, 'quantity': quantity, 
         'city': city, 'weather': weather_description})
 
+    return redirect(url_for('index'), code=302)
     #  return "Entry created successfully!", 200
-    return redirect("/", code=302)
+    #  return redirect("/", code=302)
 
 
 @app.route('/editItem', methods=["POST"])
