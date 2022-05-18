@@ -36,8 +36,9 @@
 						<button type="button" class="btn btn-outline-primary">Update</button>
 					</th>
 					<th scope = "col">
-						<form action="">
-						<button type="button" class="btn btn-outline-danger">Delete</button>
+						<form action="/removeItem">
+							<input type="hidden" name="hidden_id" value={{entry.id}} />
+							<button type="submit" class="btn btn-outline-danger">Delete</button>
 						</form>
 					</th>
 				</tr>

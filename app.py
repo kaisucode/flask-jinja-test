@@ -57,12 +57,12 @@ def index():
 
 @app.route('/form')
 def form(): 
+    return render_template('form.html', entries=test_data)
+
+@app.route('/createEntry', methods=["GET"])
+def createEntry(): 
 
     args = request.args
-   
-    if not args: 
-        print("endpoint received")
-        return render_template('form.html', entries=test_data)
 
     _id = str(uuid.uuid4())
     item_name = args.get('item_name')
@@ -104,11 +104,10 @@ def editEntry():
     #  return "Entry edited successfully!", 200
     return redirect("/", code=302)
 
-@app.route('/removeItem', methods=["POST"])
+@app.route('/removeItem', methods=["GET"])
 def removeEntry():
-    _id = request.form.get('id')
+    _id = request.args.get('hidden_id')
     db.entries.delete_one({'id': _id})
-    #  return "Entry removed successfully!", 200
     return redirect("/", code=302)
 
 #  @app.route('/readAllItems', methods=["GET"])
