@@ -7,7 +7,7 @@ import requests
 import io
 import csv
 
-PORT = 5000
+PORT = 80
 app = Flask(__name__)
 
 # handle CORS
@@ -158,5 +158,5 @@ def removeEntry():
     return redirect("/", code=302)
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=PORT, debug=True)
+    app.run(host="0.0.0.0", port=PORT, debug=True)
 
