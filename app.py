@@ -57,19 +57,37 @@ def index():
 
 @app.route('/form')
 def form(): 
-    return render_template('form.html', entries=test_data)
+    return render_template('form.html', 
+            title="Create",
+            submitEndpoint="/createEntry",
+            defaultItemName="Item",
+            defaultCity="Boston,MA,USA",
+            defaultQuantity=3,
+            )
 
-@app.route('/createEntry', methods=["GET"])
-def createEntry(): 
+@app.route('/updateForm')
+def updateForm(): 
+    _id = request.args.get('hidden_id')
+    item_name = request.args.get('hidden_item_name')
+    city = request.args.get('hidden_city')
+    weather = request.args.get('hidden_weather')
+    quantity = request.args.get('hidden_quantity')
 
-    args = request.args
+    print(request.args)
 
-    _id = str(uuid.uuid4())
-    item_name = args.get('item_name')
-    quantity = args.get('quantity')
-    city = args.get('city')
+    return render_template('form.html', 
+            title="Update",
+            submitEndpoint="/editEntry",
+            itemID=_id,
+            weather=weather,
 
-    print(WEATHER_API_URL.format(city=city, apikey=API_KEY))
+            defaultItemName=item_name,
+            defaultCity=city,
+            defaultQuantity=quantity,
+            )
+
+def getWeatherDescription(city): 
+    #  print(WEATHER_API_URL.format(city=city, apikey=API_KEY))
     res = requests.get(WEATHER_API_URL.format(city=city, apikey=API_KEY))
     if not res.ok: 
         print("failed to get weather information")
@@ -85,6 +103,20 @@ def createEntry():
             pressure=weather_data["pressure"], 
             humidity=weather_data["humidity"])
 
+    return weather_description
+
+@app.route('/createEntry', methods=["GET"])
+def createEntry(): 
+
+    args = request.args
+
+    _id = str(uuid.uuid4())
+    item_name = args.get('item_name')
+    quantity = args.get('quantity')
+    city = args.get('city')
+
+    weather_description = getWeatherDescription(city)
+
     db.entries.insert_one({'id': _id, 'item_name': item_name, 'quantity': quantity, 
         'city': city, 'weather': weather_description})
 
@@ -93,10 +125,26 @@ def createEntry():
     #  return redirect("/", code=302)
 
 
-@app.route('/editItem', methods=["POST"])
+@app.route('/editEntry', methods=["GET"])
 def editEntry():
-    _id = request.form.get('id')
-    result = db.entries.update({'id': _id}, request.form.get("updates"))
+    #  _id = request.form.get('id')
+    print(request.args)
+    args = request.args
+    _id = args.get('id')
+    item_name = args.get('item_name')
+    quantity = args.get('quantity')
+    city = args.get('city')
+    weather_description = getWeatherDescription(city)
+
+    #  return redirect("/", code=302)
+    #  updatedData = jsonify({'item_name': item_name, 'quantity': quantity, 
+    #      'city': city, 'weather': weather_description})
+    updatedData = {'item_name': item_name, 'quantity': quantity, 
+        'city': city, 'weather': weather_description}
+    #  result = db.entries.update({'id': _id}, request.form.get("updates"))
+
+    #  db.entries.update_one({'id': _id}, updatedData)
+    db.entries.update_one({'id': _id}, {"$set": updatedData})
     #  item_name = request.form.get('item_name')
     #  quantity = request.form.get('quantity')
     #  city = request.form.get('city')
@@ -104,7 +152,7 @@ def editEntry():
     #  return "Entry edited successfully!", 200
     return redirect("/", code=302)
 
-@app.route('/removeItem', methods=["GET"])
+@app.route('/removeEntry', methods=["GET"])
 def removeEntry():
     _id = request.args.get('hidden_id')
     db.entries.delete_one({'id': _id})

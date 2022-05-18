@@ -33,11 +33,20 @@
 					<td>{{entry.city}}</td>
 					<td>{{entry.weather}}</td>
 					<th scope = "col">
-						<button type="button" class="btn btn-outline-primary">Update</button>
-					</th>
-					<th scope = "col">
-						<form action="/removeItem">
+						<form action="/updateForm">
 							<input type="hidden" name="hidden_id" value={{entry.id}} />
+							<input type="hidden" name="hidden_item_name" value={{entry.item_name}} />
+							<input type="hidden" name="hidden_quantity" value={{entry.quantity}} />
+							<input type="hidden" name="hidden_city" value={{entry.city}} />
+							<input type="hidden" name="hidden_weather" value={{entry.weather}} />
+							<button type="submit" class="btn btn-outline-primary">Update</button>
+						</form>
+					</th>
+
+					<th scope = "col">
+						<form action="/removeEntry">
+							<input type="hidden" name="hidden_id" value={{entry.id}} />
+
 							<button type="submit" class="btn btn-outline-danger">Delete</button>
 						</form>
 					</th>

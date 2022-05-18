@@ -12,19 +12,25 @@
 
 <div style="width: 30%; margin: 0px 50px">
 
+	<h1 class="display-6">{{title}}</h1>
 	<a href="/">Back</a>
 	<br> <br>
 
-	<form action="/createEntry">
+
+
+	<form action={{submitEndpoint}}>
+		<input type="hidden" name="id" value={{itemID}} />
+
 		<div class="form-group">
 			<label for="exampleInputEmail1">Name</label>
-			<input type="text" class="form-control" id="nameInput" name="item_name" placeholder="Chocolate" value="Chocolate">
+			<input type="text" class="form-control" id="nameInput" name="item_name" placeholder="Chocolate" value={{defaultItemName}}>
 		</div>
 		<br>
 
 		<div class="form-group">
-			<label for="exampleFormControlSelect1">Example select</label> <small id="emailHelp" class="form-text text-muted">Click to select city.</small>
-			<select class="form-control" id="cityInput" name="city">
+			<label for="exampleFormControlSelect1">Example select</label> 
+			<small id="emailHelp" class="form-text text-muted">Click to select city.</small>
+			<select class="form-control" id="cityInput" name="city" value={{defaultCity}}>
 				<option>Boston,MA,USA</option>
 				<option>Cupertino,CA,USA</option>
 				<option>Providence,RI,USA</option>
@@ -36,43 +42,13 @@
 
 		<div class="form-group">
 			<label class="form-check-label" for="exampleCheck1">Quantity</label>
-			<input type="number" id="quantityInput" name="quantity" min="0" value=3>
+			<input type="number" id="quantityInput" name="quantity" min="0" value={{defaultQuantity}}>
 		</div>
 		<br>
 
-		<button id="submitButton" class="btn btn-primary" type="submit">Create Entry</button>
+		<button id="submitButton" class="btn btn-primary" type="submit">{{title}} Entry</button>
 	</form>
 </div>
 
-<script>
-	/*
-	const button = document.getElementById('submitButton');
-
-	button.addEventListener('click', async _ => {
-
-			const ret = {
-									"item_name": document.getElementById("nameInput").value,
-									"city": document.getElementById("cityInput").value,
-									"quantity": document.getElementById("quantityInput").value,
-								};
-
-			console.log(ret)
-
-			try {     
-					console.log(document.getElementById("cityInput").value)
-					const response = await fetch('/createItem', {
-							method: 'POST',
-							body: JSON.stringify(ret)
-						});
-					console.log('Completed!', response);
-				} catch(err) {
-						console.error(`Error: ${err}`);
-					}
-		});
-		 */
-	const button = document.getElementById('submitButton');
-</script>
-
-<!-- <script type="text/javascript" src="{{ url_for('static', filename='sketch.js') }}"></script> -->
 {% endblock %}
 
