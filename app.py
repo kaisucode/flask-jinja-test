@@ -30,7 +30,7 @@ cities = {
 test_data = [
         {
             "id": "1",
-            "name": "Chocolate",
+            "item_name": "Chocolate",
             "quantity": "500",
             "city": "Boston",
             "weather": "niceeeee"
@@ -38,7 +38,7 @@ test_data = [
 
         {
             "id": "2",
-            "name": "Coffee",
+            "item_name": "Coffee",
             "quantity": "300",
             "city": "San Jose",
             "weather": "extra niceee"
@@ -48,7 +48,12 @@ test_data = [
 @app.route('/index')
 @app.route('/')
 def index(): 
-#      result = db.entries.find()
+    #  result = db.entries.find()
+    #  print(jsonify(result))
+    print(list(db.entries.find()))
+    entry_data = list(db.entries.find())
+    return render_template('index.html', entries=entry_data)
+
 #      return flask.jsonify(result)
     return render_template('index.html', entries=test_data)
 

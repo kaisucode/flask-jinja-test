@@ -17,7 +17,6 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th scope="col">id</th>
 					<th scope="col">Name</th>
 					<th scope="col">Quantity</th>
 					<th scope="col">City</th>
@@ -29,8 +28,7 @@
 				{% for entry in entries %}
 
 				<tr>
-					<td>{{entry.id}}</th>
-					<td>{{entry.name}}</td>
+					<td>{{entry.item_name}}</td>
 					<td>{{entry.quantity}}</td>
 					<td>{{entry.city}}</td>
 					<td>{{entry.weather}}</td>
