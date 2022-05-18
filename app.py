@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 import os
 import uuid
 import requests
-
+import io
+import csv
 
 PORT = 5000
 app = Flask(__name__)
@@ -55,6 +56,23 @@ def index():
     return render_template('index.html', entries=entry_data)
     #  return render_template('index.html', entries=test_data)
 
+@app.route('/download')
+def download(): 
+    entry_data = list(db.entries.find())
+
+    si = io.StringIO()
+    csv_data = csv.writer(si)
+
+    for entry in entry_data: 
+        row_data = []
+        for key in entry: 
+            row_data.append(entry[key])
+        csv_data.writerow(row_data)
+    ret = make_response(si.getvalue())
+    ret.headers["Content-Disposition"] = "attachment; filename=inventory.csv"
+    ret.headers["Content-type"] = "text/csv"
+    return ret
+
 @app.route('/form')
 def form(): 
     return render_template('form.html', 
@@ -87,7 +105,6 @@ def updateForm():
             )
 
 def getWeatherDescription(city): 
-    #  print(WEATHER_API_URL.format(city=city, apikey=API_KEY))
     res = requests.get(WEATHER_API_URL.format(city=city, apikey=API_KEY))
     if not res.ok: 
         print("failed to get weather information")
@@ -109,26 +126,19 @@ def getWeatherDescription(city):
 def createEntry(): 
 
     args = request.args
-
     _id = str(uuid.uuid4())
     item_name = args.get('item_name')
     quantity = args.get('quantity')
     city = args.get('city')
-
     weather_description = getWeatherDescription(city)
 
     db.entries.insert_one({'id': _id, 'item_name': item_name, 'quantity': quantity, 
         'city': city, 'weather': weather_description})
 
     return redirect(url_for('index'), code=302)
-    #  return "Entry created successfully!", 200
-    #  return redirect("/", code=302)
-
 
 @app.route('/editEntry', methods=["GET"])
 def editEntry():
-    #  _id = request.form.get('id')
-    print(request.args)
     args = request.args
     _id = args.get('id')
     item_name = args.get('item_name')
@@ -136,20 +146,9 @@ def editEntry():
     city = args.get('city')
     weather_description = getWeatherDescription(city)
 
-    #  return redirect("/", code=302)
-    #  updatedData = jsonify({'item_name': item_name, 'quantity': quantity, 
-    #      'city': city, 'weather': weather_description})
     updatedData = {'item_name': item_name, 'quantity': quantity, 
         'city': city, 'weather': weather_description}
-    #  result = db.entries.update({'id': _id}, request.form.get("updates"))
-
-    #  db.entries.update_one({'id': _id}, updatedData)
     db.entries.update_one({'id': _id}, {"$set": updatedData})
-    #  item_name = request.form.get('item_name')
-    #  quantity = request.form.get('quantity')
-    #  city = request.form.get('city')
-    #  weather_description = request.form.get('weather_description')
-    #  return "Entry edited successfully!", 200
     return redirect("/", code=302)
 
 @app.route('/removeEntry', methods=["GET"])
@@ -157,11 +156,6 @@ def removeEntry():
     _id = request.args.get('hidden_id')
     db.entries.delete_one({'id': _id})
     return redirect("/", code=302)
-
-#  @app.route('/readAllItems', methods=["GET"])
-#  def readEntry():
-#      result = db.entries.find()
-#      return flask.jsonify(result)
 
 if __name__ == "__main__":
     app.run(host="localhost", port=PORT, debug=True)
