@@ -6,18 +6,21 @@ import uuid
 import requests
 
 
-WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apikey}"
-
 PORT = 5000
 app = Flask(__name__)
 
+# handle CORS
 app.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(app)
 
+# mongodb setup
 app.config["MONGO_URI"] = str(os.environ.get("MONGODB_PROD_STRING"))
-API_KEY = str(os.environ.get("OPENWEATHER_API_KEY"))
 mongo = PyMongo(app)
 db = mongo.db
+
+# weather api setup
+WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apikey}"
+API_KEY = str(os.environ.get("OPENWEATHER_API_KEY"))
 
 cities = {
         "Boston": [42.21, 71.5], 
@@ -48,14 +51,9 @@ test_data = [
 @app.route('/index')
 @app.route('/')
 def index(): 
-    #  result = db.entries.find()
-    #  print(jsonify(result))
-    print(list(db.entries.find()))
     entry_data = list(db.entries.find())
     return render_template('index.html', entries=entry_data)
-
-#      return flask.jsonify(result)
-    return render_template('index.html', entries=test_data)
+    #  return render_template('index.html', entries=test_data)
 
 @app.route('/form')
 def form(): 
