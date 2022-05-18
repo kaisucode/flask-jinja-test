@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+
+
+
+
+<div style="width: 30%; margin: 0px 50px">
+
+	<a href="/">Back</a>
+	<br> <br>
+
+	<form>
+		<div class="form-group">
+			<label for="exampleInputEmail1">Name</label>
+			<input type="text" class="form-control" id="fname" name="fname" placeholder="Chocolate">
+		</div>
+		<br>
+
+		<div class="form-group">
+			<label for="exampleFormControlSelect1">Example select</label> <small id="emailHelp" class="form-text text-muted">Click to select city.</small>
+			<select class="form-control" id="exampleFormControlSelect1">
+				<option>Boston</option>
+				<option>San Jose</option>
+				<option>Providence</option>
+				<option>Detroit</option>
+				<option>New York</option>
+			</select>
+		</div>
+		<br>
+
+		<div class="form-group">
+			<label class="form-check-label" for="exampleCheck1">Quantity</label>
+			<input type="number" id="quantity" name="tentacles" min="0">
+		</div>
+		<br>
+
+		<button type="submit" class="btn btn-primary">Create Entry</button>
+	</form>
+</div>
+
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='sketch.js') }}"></script> -->
+{% endblock %}
+

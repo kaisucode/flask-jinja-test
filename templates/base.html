@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Production app</title>
+
+
+    <!-- <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='node_modules/p5/lib/p5.min.js') }}"></script> -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+    {% block head %}{% endblock %}
+
+  </head>
+  <body>
+
+		<div style="padding: 20px 80px">
+			<a href="/"> <h1 class="display-4">Inventory Tracking App!!</h1> </a>
+		</div>
+
+    {% block content %}{% endblock %}
+  </body>
+</html>
+

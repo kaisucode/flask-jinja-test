@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<center>
+	<div style="padding-bottom: 20px">
+		<a class="btn btn-success" href="/form" role="button">Create Item</a>
+	</div>
+
+	<div style="width: 80%">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">id</th>
+					<th scope="col">Name</th>
+					<th scope="col">Quantity</th>
+					<th scope="col">City</th>
+					<th scope="col">Weather</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				{% for entry in entries %}
+
+				<tr>
+					<td>{{entry.id}}</th>
+					<td>{{entry.name}}</td>
+					<td>{{entry.quantity}}</td>
+					<td>{{entry.city}}</td>
+					<td>{{entry.weather}}</td>
+					<th scope = "col">
+						<button type="button" class="btn btn-outline-primary">Update</button>
+					</th>
+					<th scope = "col">
+						<button type="button" class="btn btn-outline-danger">Delete</button>
+					</th>
+				</tr>
+
+				{% endfor %}
+
+				<!-- <tr> -->
+				<!--   <td>1</th> -->
+				<!--   <td>Chocolate</td> -->
+				<!--   <td>500</td> -->
+				<!--   <td>Boston</td> -->
+				<!--   <td>Niceee</td> -->
+				<!--   <th scope = "col"> -->
+				<!--     <button type="button" class="btn btn-outline-primary">Update</button> -->
+				<!--   </th> -->
+				<!--   <th scope = "col"> -->
+				<!--     <button type="button" class="btn btn-outline-danger">Delete</button> -->
+				<!--   </th> -->
+				<!-- </tr> -->
+
+			</tbody>
+		</table>
+	</div>
+</center>
+
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='sketch.js') }}"></script> -->
+{% endblock %}
+
